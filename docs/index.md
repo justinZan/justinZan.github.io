@@ -27,6 +27,7 @@ features:
 
 ## 最近文章
 
+- [AI 常见面试题整理](/posts/ai-interview)
+- [React 常见面试题整理](/posts/react-interview)
+- [Vue3 常见面试题整理](/posts/vue3-interview)
 - [第一篇文章](/posts/first-post)
-- [Vue 学习笔记](/posts/vue-note)
-
