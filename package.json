@@ -1,0 +1,17 @@
+{
+  "name": "my-blog",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev docs --host 0.0.0.0",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs --host 0.0.0.0",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.8.4",
+    "vitepress": "^1.6.4"
+  }
+}
+
