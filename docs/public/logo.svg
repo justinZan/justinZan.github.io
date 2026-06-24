@@ -1,6 +1,20 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="64" height="64" rx="14" fill="#2563eb"/>
-  <path d="M18 20H34C41.18 20 46 24.36 46 31.02C46 37.64 41.18 42 34 42H28V52H18V20ZM28 28.18V33.82H33.14C35.06 33.82 36.14 32.72 36.14 31.02C36.14 29.28 35.06 28.18 33.14 28.18H28Z" fill="white"/>
-  <path d="M43 44H52V52H43V44Z" fill="#a7f3d0"/>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="JustinZan logo">
+  <defs>
+    <linearGradient id="jz-bg" x1="8" y1="6" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="0.52" stop-color="#0f766e"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="jz-bolt" x1="16" y1="10" x2="49" y2="55" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#facc15"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect x="3" y="3" width="58" height="58" rx="17" fill="url(#jz-bg)"/>
+  <rect x="3" y="3" width="58" height="58" rx="17" stroke="#67e8f9" stroke-width="3"/>
+  <path d="M13 44L26.8 8H41L33.8 28.5H51L24.8 58L31.5 37.4H16.4L13 44Z" fill="url(#jz-bolt)"/>
+  <path d="M16 16H29V35.2C29 44.4 23.4 49 15.3 49C13.3 49 11.6 48.7 10 48.1V38.8C11.3 39.5 12.9 39.9 14.7 39.9C18.3 39.9 20.1 38 20.1 34.1V24.7H16V16Z" fill="white"/>
+  <path d="M35 16H53V23.1L44.7 39.7H53.6V48H34.3V40.9L42.7 24.3H35V16Z" fill="white"/>
+  <path d="M11 10H22V14H11V10Z" fill="#f97316"/>
+  <circle cx="52" cy="12" r="5" fill="#f97316"/>
 </svg>
-
