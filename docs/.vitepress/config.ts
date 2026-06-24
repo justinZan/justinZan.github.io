@@ -20,6 +20,7 @@ export default defineConfig({
         items: [
           { text: '学习入口', link: '/posts/english-learning' },
           { text: '高频单词', link: '/posts/english-words' },
+          { text: '六级词库', link: '/posts/english-cet6-words' },
           { text: '常见短句', link: '/posts/english-phrases' },
           { text: '场景表达', link: '/posts/english-scenarios' }
         ]

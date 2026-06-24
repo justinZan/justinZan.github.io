@@ -20,6 +20,7 @@
 ## 内容分类
 
 - [英语高频单词](/posts/english-words)
+- [英语六级词库](/posts/english-cet6-words)
 - [英语常见短句](/posts/english-phrases)
 - [英语场景表达](/posts/english-scenarios)
 
@@ -43,4 +44,3 @@
 
 我想在工作中使用的一句话：
 ```
-

@@ -51,6 +51,172 @@ function isIgnorableNode(node: ChildNode) {
   return node.nodeType === Node.TEXT_NODE && !node.textContent?.trim()
 }
 
+function normalizeQuestionText(heading: Element) {
+  return (heading.textContent || '')
+    .replace(/\s+/g, ' ')
+    .replace('已掌握', '')
+    .trim()
+}
+
+function progressStorageKey(heading: Element, index: number) {
+  const id = heading.id || `${normalizeQuestionText(heading)}-${index}`
+  return `justinzan:qa-progress:${window.location.pathname}:${id}`
+}
+
+function readProgress(key: string) {
+  try {
+    return window.localStorage.getItem(key) === 'done'
+  } catch {
+    return false
+  }
+}
+
+function writeProgress(key: string, done: boolean) {
+  try {
+    if (done) {
+      window.localStorage.setItem(key, 'done')
+    } else {
+      window.localStorage.removeItem(key)
+    }
+  } catch {
+    // Ignore storage failures, such as private browsing restrictions.
+  }
+}
+
+function syncQuestionProgress(heading: Element, done: boolean) {
+  heading.classList.toggle('qa-question-done', done)
+  const answer = heading.nextElementSibling
+  if (answer?.classList.contains('qa-answer')) {
+    answer.classList.toggle('qa-answer-done', done)
+  }
+}
+
+function enhanceQuestionProgress(headings: Element[]) {
+  headings.forEach((heading, index) => {
+    if (heading.querySelector('.qa-check')) {
+      const input = heading.querySelector<HTMLInputElement>('.qa-check')
+      syncQuestionProgress(heading, Boolean(input?.checked))
+      return
+    }
+
+    const key = progressStorageKey(heading, index)
+    const label = document.createElement('label')
+    label.className = 'qa-check-label'
+    label.title = '标记为已看懂'
+
+    const input = document.createElement('input')
+    input.className = 'qa-check'
+    input.type = 'checkbox'
+    input.checked = readProgress(key)
+    input.setAttribute('aria-label', `标记已看懂：${normalizeQuestionText(heading)}`)
+
+    const mark = document.createElement('span')
+    mark.className = 'qa-check-mark'
+    mark.setAttribute('aria-hidden', 'true')
+
+    label.append(input, mark)
+    heading.prepend(label)
+    syncQuestionProgress(heading, input.checked)
+
+    input.addEventListener('change', () => {
+      writeProgress(key, input.checked)
+      syncQuestionProgress(heading, input.checked)
+    })
+  })
+}
+
+function isWordTable(table: HTMLTableElement) {
+  const headers = Array.from(table.querySelectorAll('thead th')).map((header) =>
+    (header.textContent || '').trim().toLowerCase()
+  )
+
+  return (
+    (headers[0] === 'word' && headers[1] === '中文' && headers[2] === 'example') ||
+    (headers[0] === '掌握' && headers[1] === 'word' && headers[2] === '中文')
+  )
+}
+
+function wordStorageKey(word: string, index: number) {
+  return `justinzan:word-progress:${window.location.pathname}:${word.toLowerCase()}:${index}`
+}
+
+function syncWordProgress(row: HTMLTableRowElement, done: boolean) {
+  row.classList.toggle('word-row-done', done)
+}
+
+function enhanceWordProgress() {
+  const doc = document.querySelector('.vp-doc')
+  if (!doc) return
+
+  const tables = Array.from(doc.querySelectorAll<HTMLTableElement>('table')).filter(isWordTable)
+
+  tables.forEach((table) => {
+    table.classList.add('word-table')
+
+    const firstHeader = table.querySelector<HTMLTableCellElement>('thead th')
+    const hasProgressColumn = firstHeader?.textContent?.trim() === '掌握'
+
+    if (!hasProgressColumn) {
+      const progressHeader = document.createElement('th')
+      progressHeader.className = 'word-progress-header'
+      progressHeader.textContent = '掌握'
+      firstHeader?.before(progressHeader)
+    }
+
+    const rows = Array.from(table.querySelectorAll<HTMLTableRowElement>('tbody tr'))
+
+    rows.forEach((row, index) => {
+      const wordCell = row.querySelector<HTMLTableCellElement>(
+        hasProgressColumn ? 'td:nth-child(2)' : 'td:first-child'
+      )
+      const word = wordCell?.textContent?.replace(/\s+/g, ' ').trim() || ''
+      if (!wordCell || !word) return
+
+      const progressCell = row.querySelector<HTMLTableCellElement>('.word-progress-cell')
+
+      if (progressCell?.querySelector('.word-check')) {
+        const input = progressCell.querySelector<HTMLInputElement>('.word-check')
+        syncWordProgress(row, Boolean(input?.checked))
+        return
+      }
+
+      const key = wordStorageKey(word, index)
+      const label = document.createElement('label')
+      label.className = 'word-check-label'
+      label.title = '标记为已掌握'
+
+      const input = document.createElement('input')
+      input.className = 'word-check'
+      input.type = 'checkbox'
+      input.checked = readProgress(key)
+      input.setAttribute('aria-label', `标记已掌握：${word}`)
+
+      const mark = document.createElement('span')
+      mark.className = 'word-check-mark'
+      mark.setAttribute('aria-hidden', 'true')
+
+      label.append(input, mark)
+
+      const nextProgressCell = progressCell || document.createElement('td')
+      nextProgressCell.className = 'word-progress-cell'
+      nextProgressCell.textContent = ''
+      nextProgressCell.append(label)
+
+      if (!progressCell) {
+        row.prepend(nextProgressCell)
+      }
+
+      wordCell.classList.add('word-text')
+      syncWordProgress(row, input.checked)
+
+      input.addEventListener('change', () => {
+        writeProgress(key, input.checked)
+        syncWordProgress(row, input.checked)
+      })
+    })
+  })
+}
+
 function enhanceAnswerBlocks() {
   const doc = document.querySelector('.vp-doc')
   if (!doc) return
@@ -87,6 +253,9 @@ function enhanceAnswerBlocks() {
     heading.after(answer)
     answerNodes.forEach((answerNode) => answer.appendChild(answerNode))
   })
+
+  enhanceQuestionProgress(headings)
+  enhanceWordProgress()
 }
 
 const Layout = defineComponent({
